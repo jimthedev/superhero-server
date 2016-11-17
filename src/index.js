@@ -1,20 +1,38 @@
-const http = require('http');
+// Bring in the module that we installed using npm
+var express = require('express');
 
-const server = http.createServer((req, res) => {
+// Create a new express app, called app.
+var app = express();
 
-  if (req.url === '/favicon.ico') {
-    res.writeHead(200, {'Content-Type': 'image/x-icon'} );
-    console.log('favicon requested');
-    res.end();
-    return;
-  }
-  console.log('hello');
-  res.writeHead(451, {'Content-Type': 'text/html'} );
-  res.write('<strong>Hello, world!</strong>');
-  console.log('We told the user hello!');
-  res.end();
+// Create our first route
+app.get('/', function(req, res) {
+  res.send('Hello world');
 });
-server.on('clientError', (err, socket) => {
-  socket.end('HTTP/1.1 400 Bad Request\r\n\r\n');
+
+// Create our first route
+app.get('/robot', function(req, res) {
+  res.json({
+    name: 'R2D2',
+    lastUpdated: new Date()
+  });
 });
-server.listen(8000);
+
+app.post('/robot', function (req, res) {
+  res.send('Got a POST request to create a robot')
+})
+
+app.put('/robot', function (req, res) {
+  res.send('Got a PUT request to modify a robot ')
+})
+
+app.delete('/robot/:robotId', function (req, res) {
+  res.send('Got a DELETE request for robot ' + req.params.robotId);
+})
+
+app.delete('/robot/:robotId/part/:partId', function (req, res) {
+  res.send('Got a DELETE request to delete the part (' + req.params.partId + ') on robot ' + req.params.robotId);
+})
+
+app.listen(8000, function () {
+  console.log('Example app listening on port 8000!')
+})
